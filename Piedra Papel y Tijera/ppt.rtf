@@ -1,0 +1,121 @@
+{\rtf1\ansi\deff0\nouicompat{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\f0\fs22\lang10 #---------- creamos una clase ------\par
+class detectormanos():\par
+    #-----inicializamos los parametros de la funcion ---  \par
+    def __init__(self, mode= False, maxManos=2, model_complexity=1, Confdeteccion=0.5, Confsegui = 0.5):\par
+        self.mode = mode \par
+        self.maxManos = maxManos\par
+        self.compl = model_complexity\par
+        self.Confdeteccion = Confdeteccion\par
+        self.Confsegui = Confsegui\par
+Explicacion: \par
+La clase detectormanos tiene un constructor __init__ que inicializa varios par\'e1metros.\par
+Los par\'e1metros que se inicializan en el constructor son:\par
+mode: Un booleano que indica si el modo est\'e1 activado o desactivado. Por defecto, est\'e1 desactivado (False).\par
+maxManos: Un entero que indica el n\'famero m\'e1ximo de manos a detectar. Por defecto, se establece en 2.\par
+model_complexity: Un entero que indica la complejidad del modelo a utilizar. Por defecto, se establece en 1.\par
+Confdeteccion: Un valor flotante que representa la confianza m\'ednima requerida para detectar una mano. Por defecto, se establece en 0.5.\par
+Confsegui: Un valor flotante que representa la confianza m\'ednima requerida para reconocer una mano. Por defecto, se establece en 0.5.\par
+    #---- creamos los objetos que detectaran las manos y las dibujaran \par
+        self.mpmanos = mp.solutions.hands\par
+        self.manos = self.mpmanos.Hands(self.mode, self.maxManos, self.compl, self.Confdeteccion, self.Confsegui)\par
+        self.dibujo = mp.solutions.drawing_utils\par
+        self.tip=[4,8,16,20]\par
+Explicacion\par
+self.mpmanos = mp.solutions.hands: Est\'e1s asignando a self.mpmanos el m\'f3dulo hands de la biblioteca mediapipe. Este m\'f3dulo proporciona herramientas para la detecci\'f3n de manos.\par
+\par
+self.manos = self.mpmanos.Hands(self.mode, self.maxManos, self.compl, self.Confdeteccion, self.Confsegui): Aqu\'ed est\'e1s creando un objeto de la clase Hands del m\'f3dulo mpmanos (es decir, mediapipe.Hands). Est\'e1s pasando los par\'e1metros mode, maxManos, compl, Confdeteccion, y Confsegui que has definido en el constructor __init__ de tu clase detectormanos. Esto crea un objeto que puede detectar manos seg\'fan los par\'e1metros especificados.\par
+\par
+self.dibujo = mp.solutions.drawing_utils: Est\'e1s asignando a self.dibujo el m\'f3dulo drawing_utils de la biblioteca mediapipe. Este m\'f3dulo proporciona utilidades para dibujar sobre las im\'e1genes, lo que ser\'e1 \'fatil para visualizar los resultados de la detecci\'f3n de manos.\par
+\par
+self.tip=[4,8,16,20]: Parece que est\'e1s definiendo una lista llamada tip que contiene algunos n\'fameros. Sin m\'e1s contexto, es dif\'edcil decir exactamente para qu\'e9 se utilizar\'e1 esta lista, pero parece ser alg\'fan tipo de \'edndice o identificador que se utilizar\'e1 m\'e1s adelante en el c\'f3digo.\par
+ - detectar y potencialmente dibujar manos en un fotograma de imagen \par
+    def encontrarmanos (self, frame, dibujar = True):\par
+        imgcolor = cv2.cvtColor(frame , cv2.COLOR_BGR2RGB)\par
+        self.resultados = self.manos.process(imgcolor)\par
+\par
+        if self.resultados.multi_hand_landmarks:\par
+            for mano in self.resultados.multi_hand_landmarks:\par
+                if  dibujar : \par
+                    self.dibujo.draw_landmarks(frame, mano, self.mpmanos.HAND_CONNECTIONS)\par
+        return frame \par
+explicacion: \par
+imgcolor = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB): Esta l\'ednea convierte el fotograma de imagen de su formato original (BGR) a RGB. Esto es necesario para que el modelo de detecci\'f3n de manos funcione correctamente, ya que mediapipe espera im\'e1genes en formato RGB.\par
+\par
+self.resultados = self.manos.process(imgcolor): Aqu\'ed est\'e1s procesando la imagen convertida (imgcolor) utilizando el objeto self.manos que se cre\'f3 anteriormente. Esto ejecuta el modelo de detecci\'f3n de manos en la imagen y devuelve los resultados.\par
+\par
+if self.resultados.multi_hand_landmarks:: Esto verifica si se detectaron manos en la imagen procesada. self.resultados.multi_hand_landmarks contendr\'e1 la informaci\'f3n sobre las manos detectadas si hay alguna.\par
+\par
+for mano in self.resultados.multi_hand_landmarks:: Si se detectaron manos, este bucle itera sobre cada una de las manos detectadas.\par
+\par
+if dibujar:: Esto verifica si se debe dibujar las marcas de las manos en el fotograma original. Si dibujar es True, se procede a dibujar las marcas de las manos.\par
+\par
+self.dibujo.draw_landmarks(frame, mano, self.mpmanos.HAND_CONNECTIONS): Aqu\'ed, las marcas de la mano se dibujan sobre el fotograma original utilizando la funci\'f3n draw_landmarks del m\'f3dulo drawing_utils que se import\'f3 anteriormente. frame es la imagen original sobre la cual se dibujar\'e1n las marcas, mano contiene la informaci\'f3n sobre las marcas de la mano detectadas y self.mpmanos.HAND_CONNECTIONS es una constante que define c\'f3mo conectar los puntos de las marcas de la mano para dibujar l\'edneas que representan las conexiones de la mano.\par
+\par
+return frame: Finalmente, el m\'e9todo devuelve el fotograma original con las marcas de las manos dibujadas (si se detectaron y se solicit\'f3 dibujarlas).\par
+def encontrarposicion (self, frame , ManoNum = 0 , dibujar = True, color = [] ): \par
+    xlista=[]\par
+    ylista=[]\par
+    bbox=[]\par
+    player = 0 \par
+    self.lista = []\par
+    if self.resultados.multi_hand_landmarks:\par
+        miMano = self.resultados.multi_hand_landmarks[ManoNum]\par
+        prueba = self.resultados.multi_hand_landmarks\par
+        player = len(prueba)\par
+        #printplayer \par
+        for id, lm in enumerate(miMano.landmark):\par
+            alto, ancho , c = frame.shape \par
+            cx, cy = int (lm.x * ancho ) , int (lm.y * alto )\par
+            xlista.append(cx)\par
+            ylista.append(cy)\par
+            self.lista.append([id, cx, cy])\par
+            if dibujar :\par
+                cv2.circle(frame,(cx, cy), 3,(0, 0, 0), cv2.FILLED)\par
+    \par
+        xmin, xmax = min(xlista), max(xlista)\par
+        ymin, ymax = min(ylista), max(ylista)\par
+        bbox = xmin, ymin, xmax, ymax\par
+        if dibujar:\par
+            cv2.rectangle(frame,(xmin - 20 , ymin -20), (xmax - 20 , ymax -20 ), color , 2)\par
+    return self.lista, bbox, player \par
+Explicacion \par
+\par
+Este m\'e9todo llamado encontrarposicion tiene como objetivo encontrar la posici\'f3n de una mano espec\'edfica en un fotograma de imagen dado. Aqu\'ed est\'e1 lo que hace:\par
+\par
+xlista=[] y ylista=[]: Estas variables vac\'edas se utilizan para almacenar las coordenadas x e y de los puntos clave de la mano detectada.\par
+\par
+bbox=[]: Esta lista vac\'eda se utilizar\'e1 para almacenar las coordenadas del cuadro delimitador (bounding box) que rodea la mano detectada.\par
+\par
+player = 0: Esta variable se inicializa con 0 y se utilizar\'e1 para almacenar el n\'famero total de manos detectadas en la imagen.\par
+\par
+self.lista = []: Se inicializa una lista vac\'eda lista que se utilizar\'e1 para almacenar las posiciones de los puntos clave de la mano.\par
+\par
+if self.resultados.multi_hand_landmarks:: Este bloque verifica si se detectaron manos en la imagen procesada. Si es as\'ed, contin\'faa con el siguiente bloque de c\'f3digo.\par
+\par
+miMano = self.resultados.multi_hand_landmarks[ManoNum]: Se obtiene la informaci\'f3n de la mano espec\'edfica (indicada por ManoNum) de los resultados de la detecci\'f3n de manos.\par
+\par
+prueba = self.resultados.multi_hand_landmarks: Se almacenan todos los resultados de las manos detectadas en la variable prueba.\par
+\par
+player = len(prueba): Se actualiza el valor de player con el n\'famero total de manos detectadas en la imagen.\par
+\par
+Se itera sobre cada punto clave de la mano (lm) dentro de la mano espec\'edfica (miMano):\par
+\par
+Se calculan las coordenadas (cx, cy) de cada punto clave en p\'edxeles.\par
+Estas coordenadas se agregan a xlista y ylista.\par
+Se agrega una lista [id, cx, cy] a self.lista, donde id es el identificador del punto clave.\par
+Se calculan las coordenadas del cuadro delimitador (bounding box) que rodea la mano:\par
+\par
+xmin, xmax son las coordenadas x m\'ednima y m\'e1xima respectivamente.\par
+ymin, ymax son las coordenadas y m\'ednima y m\'e1xima respectivamente.\par
+Si se establece la opci\'f3n dibujar como True, se dibujan c\'edrculos en cada punto clave de la mano y se dibuja un rect\'e1ngulo alrededor de la mano con el color especificado.\par
+\par
+El m\'e9todo devuelve una tupla que contiene:\par
+\par
+self.lista: una lista de las posiciones de los puntos clave de la mano.\par
+bbox: las coordenadas del cuadro delimitador que rodea la mano.\par
+player: el n\'famero total de manos detectadas en la imagen.\par
+En resumen, este m\'e9todo encuentra la posici\'f3n de una mano espec\'edfica en un fotograma de imagen y devuelve informaci\'f3n sobre los puntos clave de la mano, el cuadro delimitador y el n\'famero total de manos detectadas.\par
+}
+ 
