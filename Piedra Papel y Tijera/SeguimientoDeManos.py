@@ -30,29 +30,29 @@ class detectormanos():
                     self.dibujo.draw_landmarks(frame, mano, self.mpmanos.HAND_CONNECTIONS)
         return frame 
 #----------- Funcion para encontrar la posicion --------
-def encontrarposicion (self, frame , ManoNum = 0 , dibujar = True, color = [] ): 
-    xlista=[]
-    ylista=[]
-    bbox=[]
-    player = 0 
-    self.lista = []
-    if self.resultados.multi_hand_landmarks:
-        miMano = self.resultados.multi_hand_landmarks[ManoNum]
-        prueba = self.resultados.multi_hand_landmarks
-        player = len(prueba)
-        #printplayer 
-        for id, lm in enumerate(miMano.landmark):
-            alto, ancho , c = frame.shape 
-            cx, cy = int (lm.x * ancho ) , int (lm.y * alto )
-            xlista.append(cx)
-            ylista.append(cy)
-            self.lista.append([id, cx, cy])
-            if dibujar :
-                cv2.circle(frame,(cx, cy), 3,(0, 0, 0), cv2.FILLED)
-    
-        xmin, xmax = min(xlista), max(xlista)
-        ymin, ymax = min(ylista), max(ylista)
-        bbox = xmin, ymin, xmax, ymax
-        if dibujar:
-            cv2.rectangle(frame,(xmin - 20 , ymin -20), (xmax - 20 , ymax -20 ), color , 2)
-    return self.lista, bbox, player      
+    def encontrarposicion (self, frame , ManoNum = 0 , dibujar = True, color = [] ): 
+        xlista=[]
+        ylista=[]
+        bbox=[]
+        player = 0 
+        self.lista = []
+        if self.resultados.multi_hand_landmarks:
+            miMano = self.resultados.multi_hand_landmarks[ManoNum]
+            prueba = self.resultados.multi_hand_landmarks
+            player = len(prueba)
+            #printplayer 
+            for id, lm in enumerate(miMano.landmark):
+                alto, ancho , c = frame.shape 
+                cx, cy = int (lm.x * ancho ) , int (lm.y * alto )
+                xlista.append(cx)
+                ylista.append(cy)
+                self.lista.append([id, cx, cy])
+                if dibujar :
+                    cv2.circle(frame,(cx, cy), 3,(0, 0, 0), cv2.FILLED)
+        
+            xmin, xmax = min(xlista), max(xlista)
+            ymin, ymax = min(ylista), max(ylista)
+            bbox = xmin, ymin, xmax, ymax
+            if dibujar:
+                cv2.rectangle(frame,(xmin - 20 , ymin -20), (xmax - 20 , ymax -20 ), color , 2)
+        return self.lista, bbox, player      
